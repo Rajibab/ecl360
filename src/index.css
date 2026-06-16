@@ -318,10 +318,13 @@ img { max-width: 100%; display: block; }
 .mobile-menu-btn {
   display: none;
   width: 36px; height: 36px;
+  border: none;
+  background: transparent;
   border-radius: var(--radius-md);
   align-items: center; justify-content: center;
   color: var(--color-text-3);
   transition: all var(--transition-fast);
+  cursor: pointer;
 }
 .mobile-menu-btn:hover { background: var(--color-bg-2); color: var(--color-text); }
 
@@ -1873,6 +1876,26 @@ img { max-width: 100%; display: block; }
 .profile-info-item { display: flex; flex-direction: column; gap: 4px; }
 .pinfo-label { font-size: 0.75rem; font-weight: 600; color: var(--color-text-3); text-transform: uppercase; letter-spacing: 0.5px; }
 .pinfo-val { font-size: 0.9375rem; font-weight: 600; color: var(--color-text); }
+
+.profile-skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.profile-skill-badge {
+  font-size: 0.75rem;
+  background: rgba(30, 64, 175, 0.08);
+  color: var(--blue-primary);
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  font-weight: 500;
+  transition: all var(--transition-fast);
+  cursor: default;
+}
+.profile-skill-badge:hover {
+  background: rgba(30, 64, 175, 0.15);
+  transform: translateY(-2px);
+}
 
 /* ── SETTINGS PAGE ── */
 .settings-layout { display: grid; grid-template-columns: 200px 1fr; gap: var(--space-6); align-items: start; }

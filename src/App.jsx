@@ -150,7 +150,14 @@ export default function App() {
           />
         );
       case 'profile':
-        return <Profile />;
+        return (
+          <Profile 
+            tasks={tasks}
+            leaveHistory={leaveHistory}
+            userPointsBalance={userPointsBalance}
+            activeAssetRequestCount={activeAssetRequestCount}
+          />
+        );
       case 'settings':
         return (
           <Settings 

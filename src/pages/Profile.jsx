@@ -1,9 +1,7 @@
 import React from 'react';
-import { 
-  MapPin 
-} from 'lucide-react';
+import { MapPin, Mail, User as UserIcon } from 'lucide-react';
 
-export default function Profile() {
+export default function Profile({ tasks = [], leaveHistory = [], userPointsBalance = 0, activeAssetRequestCount = 0 }) {
   const profileDetails = {
     name: 'John Doe',
     role: 'Senior Engineer',
@@ -12,9 +10,17 @@ export default function Profile() {
     doj: 'March 12, 2022',
     email: 'john.doe@ecl360.com',
     location: 'Plant 2 · Shift A',
-    manager: 'Sunita Rao (Operations Manager)',
+    manager: 'Sunita Rao',
     skills: ['Process Control', 'Machine Safety', 'Root Cause Analysis', 'Plant Maintenance'],
   };
+
+  // Calculate dynamic stats
+  const activeTasksCount = tasks.filter(t => t.assignee.includes('John Doe') && t.status !== 'completed').length;
+  
+  const casualLeavesApplied = leaveHistory.filter(l => l.type === 'Casual Leave' && l.status === 'Approved').reduce((acc, curr) => acc + parseInt(curr.days), 0);
+  const sickLeavesApplied = leaveHistory.filter(l => l.type === 'Sick Leave' && l.status === 'Approved').reduce((acc, curr) => acc + parseInt(curr.days), 0);
+  const earnedLeavesApplied = leaveHistory.filter(l => l.type === 'Earned Leave' && l.status === 'Approved').reduce((acc, curr) => acc + parseInt(curr.days), 0);
+  const totalLeavesRemaining = Math.max(0, 8 - casualLeavesApplied) + Math.max(0, 12 - sickLeavesApplied) + Math.max(0, 6 - earnedLeavesApplied);
 
   return (
     <div className="profile-content" id="page-profile">
@@ -25,88 +31,97 @@ export default function Profile() {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1.5rem', marginTop: '1.5rem' }}>
-        {/* Profile Card Summary */}
-        <div className="card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
-          <div className="hero-bg-orb orb-1" style={{ top: '-40px', right: '-40px', width: '120px', height: '120px' }}></div>
-          <div className="hero-avatar" style={{ margin: '0 0 1.25rem 0' }}>
-            <div className="hero-avatar-ring" style={{ width: '96px', height: '96px', fontSize: '2rem', fontWeight: '800' }}>JD</div>
-            <span className="hero-avatar-status online" style={{ width: '16px', height: '16px', border: '3px solid var(--color-surface)' }}></span>
-          </div>
-          <h2 style={{ fontSize: '1.25rem', fontWeight: '700', color: 'var(--color-text)' }}>{profileDetails.name}</h2>
-          <p style={{ fontSize: '0.8125rem', color: 'var(--blue-primary)', fontWeight: '600', marginTop: '2px' }}>{profileDetails.role}</p>
-          <p style={{ fontSize: '0.75rem', color: 'var(--color-text-3)', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '8px' }}>
-            <MapPin className="icon-xs" /> {profileDetails.location}
-          </p>
+      <div className="profile-layout">
+        {/* Left Column: Avatar & Summary Card */}
+        <div className="profile-left-col">
+          <div className="card profile-main-card">
+            <div className="profile-hero-bg"></div>
+            <div className="profile-avatar-section">
+              <div className="profile-avatar-lg">JD</div>
+              <span className="profile-avatar-online"></span>
+            </div>
+            
+            <div className="profile-main-info">
+              <h2 className="profile-full-name">{profileDetails.name}</h2>
+              <p className="profile-main-role">{profileDetails.role}</p>
+              <div className="profile-emp-id">ID: {profileDetails.empId}</div>
+            </div>
 
-          <div style={{ width: '100%', borderTop: '1px solid var(--color-border)', marginTop: '1.5rem', paddingTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '8px', textAlign: 'left' }}>
-            <div>
-              <span style={{ fontSize: '0.7rem', color: 'var(--color-text-4)', textTransform: 'uppercase', fontWeight: '700' }}>Employee ID</span>
-              <p style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--color-text)' }}>{profileDetails.empId}</p>
+            <div className="profile-stats-row">
+              <div className="profile-stat">
+                <span className="pstat-val">{userPointsBalance}</span>
+                <span className="pstat-label">Points Balance</span>
+              </div>
+              <div className="profile-stat">
+                <span className="pstat-val">{activeTasksCount}</span>
+                <span className="pstat-label">Active Tasks</span>
+              </div>
+              <div className="profile-stat">
+                <span className="pstat-val">{totalLeavesRemaining}d</span>
+                <span className="pstat-label">Leaves Left</span>
+              </div>
             </div>
-            <div>
-              <span style={{ fontSize: '0.7rem', color: 'var(--color-text-4)', textTransform: 'uppercase', fontWeight: '700' }}>Email Address</span>
-              <p style={{ fontSize: '0.875rem', color: 'var(--color-text-2)' }}>{profileDetails.email}</p>
-            </div>
-            <div>
-              <span style={{ fontSize: '0.7rem', color: 'var(--color-text-4)', textTransform: 'uppercase', fontWeight: '700' }}>Line Manager</span>
-              <p style={{ fontSize: '0.875rem', color: 'var(--color-text-2)' }}>{profileDetails.manager}</p>
+
+            <div className="profile-links">
+              <div className="profile-link">
+                <MapPin className="icon-xs" />
+                <span>{profileDetails.location}</span>
+              </div>
+              <div className="profile-link">
+                <Mail className="icon-xs" />
+                <span>{profileDetails.email}</span>
+              </div>
+              <div className="profile-link">
+                <UserIcon className="icon-xs" />
+                <span>Reports to {profileDetails.manager}</span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Detailed Profile Info */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <div className="card" style={{ padding: '1.5rem' }}>
-            <div className="card-header" style={{ marginBottom: '1.25rem' }}>
+        {/* Right Column: Detailed Profile Info */}
+        <div className="profile-right-col">
+          <div className="card" style={{ padding: 'var(--space-5)' }}>
+            <div className="card-header" style={{ marginBottom: 'var(--space-4)' }}>
               <h2 className="card-title">Employment Information</h2>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem 2rem' }}>
-              <div className="profile-info-item" style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid var(--color-border)' }}>
-                <span className="pinfo-label" style={{ fontSize: '0.8125rem', color: 'var(--color-text-3)' }}>Full Name</span>
-                <span className="pinfo-val" style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--color-text)' }}>{profileDetails.name}</span>
+            
+            <div className="profile-info-grid">
+              <div className="profile-info-item">
+                <span className="pinfo-label">Full Name</span>
+                <span className="pinfo-val">{profileDetails.name}</span>
               </div>
-              <div className="profile-info-item" style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid var(--color-border)' }}>
-                <span className="pinfo-label" style={{ fontSize: '0.8125rem', color: 'var(--color-text-3)' }}>Designation</span>
-                <span className="pinfo-val" style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--color-text)' }}>{profileDetails.role}</span>
+              <div className="profile-info-item">
+                <span className="pinfo-label">Designation</span>
+                <span className="pinfo-val">{profileDetails.role}</span>
               </div>
-              <div className="profile-info-item" style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid var(--color-border)' }}>
-                <span className="pinfo-label" style={{ fontSize: '0.8125rem', color: 'var(--color-text-3)' }}>Department</span>
-                <span className="pinfo-val" style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--color-text)' }}>{profileDetails.dept}</span>
+              <div className="profile-info-item">
+                <span className="pinfo-label">Department</span>
+                <span className="pinfo-val">{profileDetails.dept}</span>
               </div>
-              <div className="profile-info-item" style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid var(--color-border)' }}>
-                <span className="pinfo-label" style={{ fontSize: '0.8125rem', color: 'var(--color-text-3)' }}>Joining Date</span>
-                <span className="pinfo-val" style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--color-text)' }}>{profileDetails.doj}</span>
+              <div className="profile-info-item">
+                <span className="pinfo-label">Joining Date</span>
+                <span className="pinfo-val">{profileDetails.doj}</span>
               </div>
-              <div className="profile-info-item" style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid var(--color-border)' }}>
-                <span className="pinfo-label" style={{ fontSize: '0.8125rem', color: 'var(--color-text-3)' }}>Work Station</span>
-                <span className="pinfo-val" style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--color-text)' }}>Plant 2 Dispensary Row A</span>
+              <div className="profile-info-item">
+                <span className="pinfo-label">Work Station</span>
+                <span className="pinfo-val">Plant 2 Dispensary Row A</span>
               </div>
-              <div className="profile-info-item" style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid var(--color-border)' }}>
-                <span className="pinfo-label" style={{ fontSize: '0.8125rem', color: 'var(--color-text-3)' }}>Contract Status</span>
-                <span className="pinfo-val" style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--emerald)' }}>Permanent</span>
+              <div className="profile-info-item">
+                <span className="pinfo-label">Contract Status</span>
+                <span className="pinfo-val" style={{ color: 'var(--emerald)' }}>Permanent</span>
               </div>
             </div>
           </div>
 
           {/* Skills & Certifications */}
-          <div className="card" style={{ padding: '1.5rem' }}>
-            <div className="card-header" style={{ marginBottom: '1rem' }}>
+          <div className="card" style={{ padding: 'var(--space-5)' }}>
+            <div className="card-header" style={{ marginBottom: 'var(--space-4)' }}>
               <h2 className="card-title">Professional Skills &amp; Specialties</h2>
             </div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+            <div className="profile-skills-list">
               {profileDetails.skills.map(skill => (
-                <span 
-                  key={skill} 
-                  style={{ 
-                    fontSize: '0.75rem', 
-                    background: 'rgba(30,64,175,0.08)', 
-                    color: 'var(--blue-primary)', 
-                    padding: '6px 12px', 
-                    borderRadius: '20px',
-                    fontWeight: '500' 
-                  }}
-                >
+                <span key={skill} className="profile-skill-badge">
                   {skill}
                 </span>
               ))}
