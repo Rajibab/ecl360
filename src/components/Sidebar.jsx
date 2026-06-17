@@ -44,23 +44,17 @@ export default function Sidebar({
   return (
     <aside className={`sidebar ${sidebarCollapsed ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`} id="sidebar">
       <div className="sidebar-header">
-        <div className="logo-wrap">
-          <div className="logo-icon">
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-              <rect width="28" height="28" rx="8" fill="url(#logoGrad)" />
-              <path d="M7 14L12 19L21 9" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
-              <defs>
-                <linearGradient id="logoGrad" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stopColor="#1E40AF" />
-                  <stop offset="100%" stopColor="#4F46E5" />
-                </linearGradient>
-              </defs>
-            </svg>
-          </div>
-          <div className="logo-text">
-            <span className="logo-name">ECL</span>
-            <span className="logo-sub">360</span>
-          </div>
+        <div className="logo-wrap" style={{ display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
+          <img 
+            src="/logo.png" 
+            alt="ECL 360" 
+            style={{ 
+              height: '36px', 
+              maxWidth: sidebarCollapsed ? '36px' : '200px', 
+              objectFit: 'contain', 
+              transition: 'max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1)' 
+            }} 
+          />
         </div>
         <button 
           className="sidebar-toggle-btn" 
